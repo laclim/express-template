@@ -1,1 +1,1 @@
-export const { JWT_EXP = 60 * 60, JWT_SECRET = "secret" } = process.env;
+export const { JWT_EXP = 30, JWT_SECRET = "secret" } = process.env;

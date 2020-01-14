@@ -14,15 +14,13 @@ export const extractToken = async (
       const token = req.headers.authorization.split(" ")[1];
       jwt.verify(token, process.env.JWT_SECRET!);
       const decoded = jwt.decode(token, { complete: true });
-
       req.headers.userId = (decoded as any).payload.userId;
-
       next();
     } catch (error) {
-      throw new Unauthorized();
+      next(new Unauthorized());
     }
   } else {
-    throw new Unauthorized();
+    next(new Unauthorized());
   }
   return null;
 };

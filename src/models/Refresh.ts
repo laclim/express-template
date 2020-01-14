@@ -20,4 +20,4 @@ const refreshSchema = new Schema(
   }
 );
 
-export const Refresh = model<IRefresh>("Refresh", refreshSchema);
+export const Refresh = model<IRefresh>("Refresh", refreshSchema, "Refresh");

@@ -3,8 +3,6 @@ import { registerSchema, loginSchema, refreshSchema } from "../validation";
 import { User } from "../models";
 import { login, isLoggedIn } from "../auth";
 import { BadRequest, Unauthorized } from "../errors";
-import jwt from "jsonwebtoken";
-import { runInNewContext } from "vm";
 import { trycatch } from "./trycatch";
 import { extractToken } from "./headers";
 import { generateGuid, generateToken, generateRefreshToken } from "../utility";
@@ -12,7 +10,7 @@ import { Refresh } from "../models/Refresh";
 
 const router = Router();
 
-router.post("/register", isLoggedIn, async (req, res, next) => {
+router.post("/register", async (req, res, next) => {
   try {
     try {
       await registerSchema.validate(req.body, {
@@ -30,7 +28,7 @@ router.post("/register", isLoggedIn, async (req, res, next) => {
     }
 
     const user = await User.create({ email, name, password });
-    login(req, user.id);
+
     res.json({ message: "OK" });
   } catch (error) {
     next(error);
@@ -53,8 +51,8 @@ router.post(
     }
     const token = generateToken(user.id);
     const refreshToken = await generateRefreshToken(token, user.id);
-    res.cookie("rt", refreshToken);
-    res.json({ message: "ok", token, refreshToken });
+
+    res.json({ message: "ok", token, refreshToken, userId: user.id });
   })
 );
 
@@ -79,14 +77,6 @@ router.post(
     );
 
     res.json({ message: "ok", newToken, newRefreshToken });
-  })
-);
-
-router.get(
-  "/user",
-  extractToken,
-  trycatch(async (req, res, next) => {
-    res.json({ message: "ok" });
   })
 );
 

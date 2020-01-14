@@ -10,11 +10,12 @@ const userSchema = new Schema(
   {
     email: String,
     name: String,
-    password: String
+    password: String,
+    tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }]
   },
   {
     timestamps: true
   }
 );
 
-export const User = model<IUser>("User", userSchema);
+export const User = model<IUser>("User", userSchema, "User");

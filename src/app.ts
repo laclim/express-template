@@ -1,19 +1,15 @@
 import express, { Response, Request, NextFunction } from "express";
-import session, { Store } from "express-session";
-import { SESSION_CONFIG } from "./config";
-import { register } from "./routes";
+import { register, user } from "./routes";
+import cors from "cors";
+import { extractToken } from "./routes/headers";
 
-export const AppConfig = (store: Store) => {
+export const AppConfig = () => {
   const app = express();
   app.use(express.json());
-  app.use(
-    session({
-      ...SESSION_CONFIG,
-      store: store
-    })
-  );
 
+  app.use(cors());
   app.use(register);
+  app.use(user);
   app.use(function(req, res, next) {
     res.status(404).json({ message: "Not Found" });
   });
