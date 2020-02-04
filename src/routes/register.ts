@@ -70,13 +70,10 @@ router.post(
       throw new BadRequest("Invalid refresh Token");
     }
 
-    const newToken = generateToken(refresh.userId);
-    const newRefreshToken = await generateRefreshToken(
-      newToken,
-      refresh.userId
-    );
+    const token = generateToken(refresh.userId);
+    const newRefreshToken = await generateRefreshToken(token, refresh.userId);
 
-    res.json({ message: "ok", newToken, newRefreshToken });
+    res.json({ message: "ok", token, refreshToken: newRefreshToken });
   })
 );
 
