@@ -7,6 +7,7 @@ import { trycatch } from "./trycatch";
 import { extractToken } from "./headers";
 import { generateGuid, generateToken, generateRefreshToken } from "../utility";
 import { Refresh } from "../models/Refresh";
+import { transporter } from "../config/transporter";
 
 const router = Router();
 
@@ -28,6 +29,18 @@ router.post("/register", async (req, res, next) => {
     }
 
     const user = await User.create({ email, name, password });
+    if (user) {
+      const token = generateToken(user.id, 3600);
+      const url = `http://localhost:8001/confirmation/${token}`;
+      // send confirmation email
+      transporter.sendMail({
+        from: '"Project C " <foo@example.com>', // sender address
+        to: email, // list of receivers
+        subject: "Confirmation email", // Subject line
+
+        html: `Please click this link to verify your email address <a href="${url}">${url}</a>` // html body
+      });
+    }
 
     res.json({ message: "OK" });
   } catch (error) {
