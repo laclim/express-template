@@ -1,6 +1,6 @@
 import Router from "express";
 import { trycatch } from "./trycatch";
-import { extractToken } from "./headers";
+
 import { Task, User } from "../models";
 import { postTaskSchema } from "../validation";
 import { BadRequest } from "../errors";
@@ -8,13 +8,12 @@ import { Client } from "@googlemaps/google-maps-services-js";
 import { calculateDistance } from "../utility";
 import nodemailer from "nodemailer";
 const router = Router();
-router.get("/user", extractToken, async (req, res, next) => {
+router.get("/user", async (req, res, next) => {
   res.json({ message: "ok" });
 });
 
 router.post(
   "/task",
-  extractToken,
   trycatch(async (req, res, next) => {
     try {
       await postTaskSchema.validate(req.body);
@@ -30,7 +29,6 @@ router.post(
 
 router.get(
   "/tasks",
-  extractToken,
   trycatch(async (req, res, next) => {
     const data = await Task.find().populate("createdBy ", "name");
 
@@ -39,7 +37,6 @@ router.get(
 );
 router.get(
   "/task/:id",
-  extractToken,
   trycatch(async (req, res, next) => {
     const data = await Task.findById(req.params.id);
     if (!data) throw new BadRequest("id not found");
@@ -50,7 +47,6 @@ router.get(
 
 router.delete(
   "/task/:id",
-  extractToken,
   trycatch(async (req, res, next) => {
     const data = await Task.findOneAndDelete({ _id: req.params.id });
     if (!data) throw new BadRequest("id not found");

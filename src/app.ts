@@ -1,5 +1,5 @@
 import express, { Response, Request, NextFunction } from "express";
-import { register, user } from "./routes";
+import routers from "./routes";
 import cors from "cors";
 import { extractToken } from "./routes/headers";
 
@@ -8,8 +8,8 @@ export const AppConfig = () => {
   app.use(express.json());
 
   app.use(cors());
-  app.use('/api',register);
-  app.use('/api',user);
+  app.use("/api", routers);
+
   app.use(function(req, res, next) {
     res.status(404).json({ message: "Not Found" });
   });
